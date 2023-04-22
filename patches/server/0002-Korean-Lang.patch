@@ -1,0 +1,669 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: norhu1130 <norhu1130@naver.com>
+Date: Sat, 22 Apr 2023 18:24:03 +0900
+Subject: [PATCH] Korean Lang
+
+
+diff --git a/src/main/java/net/minecraft/server/Bootstrap.java b/src/main/java/net/minecraft/server/Bootstrap.java
+index a1192d1f6b99669f843e8d9a8928ff0e8c030559..e9e4cf848db1c35b691244c9c6d757322c42369b 100644
+--- a/src/main/java/net/minecraft/server/Bootstrap.java
++++ b/src/main/java/net/minecraft/server/Bootstrap.java
+@@ -58,12 +58,12 @@ public class Bootstrap {
+             // CraftBukkit end
+             Bootstrap.isBootstrapped = true;
+             if (BuiltInRegistries.REGISTRY.keySet().isEmpty()) {
+-                throw new IllegalStateException("Unable to load registries");
++                throw new IllegalStateException("레지스트리 등록 실패"); // KPaper - Korean Lang
+             } else {
+                 FireBlock.bootStrap();
+                 ComposterBlock.bootStrap();
+                 if (EntityType.getKey(EntityType.PLAYER) == null) {
+-                    throw new IllegalStateException("Failed loading EntityTypes");
++                    throw new IllegalStateException("엔티티 타입 로드 실패");
+                 } else {
+                     PotionBrewing.bootStrap();
+                     EntitySelectorOptions.bootStrap();
+@@ -199,9 +199,9 @@ public class Bootstrap {
+         try {
+             String s = (String) callerGetter.get();
+ 
+-            return new IllegalArgumentException("Not bootstrapped (called from " + s + ")");
++            return new IllegalArgumentException("부트스트랩 실패 (" + s + "에서 호출 됨)"); // KPaper - Korean Lang 
+         } catch (Exception exception) {
+-            IllegalArgumentException illegalargumentexception = new IllegalArgumentException("Not bootstrapped (failed to resolve location)");
++            IllegalArgumentException illegalargumentexception = new IllegalArgumentException("부트스트랩 실패 - 호출자 확인 불가"); // KPaper - Korean Lang
+ 
+             illegalargumentexception.addSuppressed(exception);
+             return illegalargumentexception;
+@@ -214,7 +214,7 @@ public class Bootstrap {
+         });
+         if (SharedConstants.IS_RUNNING_IN_IDE) {
+             Bootstrap.getMissingTranslations().forEach((s) -> {
+-                Bootstrap.LOGGER.error("Missing translations: {}", s);
++                Bootstrap.LOGGER.error("번역 로드 실패: {}", s); // KPaper - Korean Lang
+             });
+             Commands.validate();
+         }
+diff --git a/src/main/java/net/minecraft/server/Main.java b/src/main/java/net/minecraft/server/Main.java
+index cdbf10339a8e8846a8c364de483a0ccd95cd225a..e03e02f81952fb9b310d332c6a840df58963d890 100644
+--- a/src/main/java/net/minecraft/server/Main.java
++++ b/src/main/java/net/minecraft/server/Main.java
+@@ -152,7 +152,7 @@ public class Main {
+                 commandsConfiguration.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("configurations/commands.yml"), Charsets.UTF_8)));
+                 commandsConfiguration.save(commandFile);
+                 // CraftBukkit end
+-                Main.LOGGER.info("Initialized '{}' and '{}'", path1.toAbsolutePath(), path2.toAbsolutePath());
++                Main.LOGGER.info("'{}' 와 '{}'를 초기화 했습니다.", path1.toAbsolutePath(), path2.toAbsolutePath()); // KPaper - Korean Lang
+                 return;
+             }
+ 
+@@ -160,25 +160,29 @@ public class Main {
+             boolean eulaAgreed = Boolean.getBoolean( "com.mojang.eula.agree" );
+             if ( eulaAgreed )
+             {
+-                System.err.println( "You have used the Spigot command line EULA agreement flag." );
+-                System.err.println( "By using this setting you are indicating your agreement to Mojang's EULA (https://account.mojang.com/documents/minecraft_eula)." );
+-                System.err.println( "If you do not agree to the above EULA please stop your server and remove this flag immediately." );
++                // KPaper start - Korean Lang
++                System.err.println( "Spigot EULA 동의 커맨드 라인을 사용하셨어요." );
++                System.err.println( "이 설정을 사용함으로써 Mojang EULA(https://account.mojang.com/documents/minecraft_eula)에 동의하셨어요." );
++                System.err.println( "만약 EULA에 동의하지 않으실 경우, 해당 커맨드를 제거해주세요." );
++                // KPaper end
+             }
+             // Spigot End
+             if (!eula.hasAgreedToEULA() && !eulaAgreed) { // Spigot
+-                Main.LOGGER.info("You need to agree to the EULA in order to run the server. Go to eula.txt for more info.");
++                Main.LOGGER.info("서버를 실행하시려면 EULA에 동의 하셔야 해요. 자세한 정보는 eula.txt를 확인해 주세요."); // KPaper - Korean Lang
+                 return;
+             }
+ 
+             // Paper start - Warn on headless
+             String awtException = io.papermc.paper.util.ServerEnvironment.awtDependencyCheck();
+             if (awtException != null) {
+-                Main.LOGGER.error("You are using a headless JRE distribution.");
+-                Main.LOGGER.error("This distribution is missing certain graphic libraries that the Minecraft server needs to function.");
+-                Main.LOGGER.error("For instructions on how to install the non-headless JRE, see https://docs.papermc.io/misc/java-install");
++                // KPaper start - Korean Lang
++                Main.LOGGER.error("Headless JRE 배포판을 사용하고 있어요.");
++                Main.LOGGER.error("이 배포판은 마인크래프트 서버를 실행하기 위한 핵심 기능을 제공하지 않아요.");
++                Main.LOGGER.error("Headless가 아닌 배포판을 설치하는 방법은 https://docs.papermc.io/misc/java-install 를 참고 해주세요.");
+                 Main.LOGGER.error("");
+                 Main.LOGGER.error(awtException);
+                 return;
++                // KPaper end
+             }
+             // Paper end
+ 
+@@ -202,12 +206,12 @@ public class Main {
+ 
+             if (worldinfo != null) {
+                 if (worldinfo.requiresManualConversion()) {
+-                    Main.LOGGER.info("This world must be opened in an older version (like 1.6.4) to be safely converted");
++                    Main.LOGGER.info("월드를 안전하게 변환하려면 이 월드를 이전 버전(1.6.4 등)에서 열어야 해요."); // KPaper - Korean Lang
+                     return;
+                 }
+ 
+                 if (!worldinfo.isCompatible()) {
+-                    Main.LOGGER.info("This world was created by an incompatible version.");
++                    Main.LOGGER.info("이 월드는 호환되지 않는 버전에서 생성되었어요."); // KPaper - Korean Lang
+                     return;
+                 }
+             }
+@@ -215,7 +219,7 @@ public class Main {
+             boolean flag = optionset.has("safeMode");
+ 
+             if (flag) {
+-                Main.LOGGER.warn("Safe mode active, only vanilla datapack will be loaded");
++                Main.LOGGER.warn("안전 모드 활성화! 바닐라 데이터팩만 로드할게요."); // KPaper - Korean Lang
+             }
+ 
+             PackRepository resourcepackrepository = ServerPacksSource.createPackRepository(convertable_conversionsession.getLevelPath(LevelResource.DATAPACK_DIR));
+@@ -277,7 +281,7 @@ public class Main {
+                     }, WorldStem::new, Util.backgroundExecutor(), executor);
+                 }).get();
+             } catch (Exception exception) {
+-                Main.LOGGER.warn("Failed to load datapacks, can't proceed with server load. You can either fix your datapacks or reset to vanilla with --safeMode", exception);
++                Main.LOGGER.warn("데이터 팩을 로드할 수 없어요, 데이터팩을 고치거나 바닐라 데이터팩으로 초기화 하려면 --safeMode을 사용할 수 있어요.", exception); // KPaper - Korean Lang
+                 return;
+             }
+ 
+@@ -331,7 +335,7 @@ public class Main {
+             Runtime.getRuntime().addShutdownHook(thread);
+             */ // CraftBukkit end
+         } catch (Exception exception1) {
+-            Main.LOGGER.error(LogUtils.FATAL_MARKER, "Failed to start the minecraft server", exception1);
++            Main.LOGGER.error(LogUtils.FATAL_MARKER, "마인크래프트 서버를 시작하지 못했어요.", exception1); // KPaper - Korean Lang
+         }
+ 
+     }
+@@ -374,7 +378,7 @@ public class Main {
+     // Paper end - fix and optimise world upgrading
+ 
+     public static void forceUpgrade(LevelStorageSource.LevelStorageAccess session, DataFixer dataFixer, boolean eraseCache, BooleanSupplier continueCheck, Registry<LevelStem> dimensionOptionsRegistry) {
+-        Main.LOGGER.info("Forcing world upgrade! {}", session.getLevelId()); // CraftBukkit
++        Main.LOGGER.info("월드를 강제로 업그레이드 하고 있어요! ({})", session.getLevelId()); // KPaper - Korean Lang // CraftBukkit 
+         WorldUpgrader worldupgrader = new WorldUpgrader(session, dataFixer, dimensionOptionsRegistry, eraseCache);
+         Component ichatbasecomponent = null;
+ 
+@@ -391,7 +395,7 @@ public class Main {
+             if (i > 0) {
+                 int j = worldupgrader.getConverted() + worldupgrader.getSkipped();
+ 
+-                Main.LOGGER.info("{}% completed ({} / {} chunks)...", new Object[]{Mth.floor((float) j / (float) i * 100.0F), j, i});
++                Main.LOGGER.info("{}% 완료되었어요. ({} / {} 청크)...", new Object[]{Mth.floor((float) j / (float) i * 100.0F), j, i}); // KPaper - Korean Lang
+             }
+ 
+             if (!continueCheck.getAsBoolean()) {
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index aca58647d0391029420ece8e4090a5eb1fd45669..1312a180311393bd1bad824098dc9caec99cbdab 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -321,7 +321,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+         }, "Server thread");
+ 
+         thread.setUncaughtExceptionHandler((thread1, throwable) -> {
+-            MinecraftServer.LOGGER.error("Uncaught exception in server thread", throwable);
++            MinecraftServer.LOGGER.error("서버 스레드에서 문제가 발생했어요", throwable); // KPaper - Korean Lang
+         });
+         if (Runtime.getRuntime().availableProcessors() > 4) {
+             thread.setPriority(8);
+@@ -357,7 +357,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+         this.registries = worldstem.registries();
+         this.worldData = worldstem.worldData();
+         if (false && !this.registries.compositeAccess().registryOrThrow(Registries.LEVEL_STEM).containsKey(LevelStem.OVERWORLD)) { // CraftBukkit - initialised later
+-            throw new IllegalStateException("Missing Overworld dimension data");
++            throw new IllegalStateException("오버월드 디멘션 타입을 찾을 수 없어요."); // KPaper - Korean Lang
+         } else {
+             this.proxy = proxy;
+             this.packRepository = resourcepackrepository;
+@@ -444,7 +444,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+             try {
+                 JvmProfiler.INSTANCE.stop();
+             } catch (Throwable throwable) {
+-                MinecraftServer.LOGGER.warn("Failed to stop JFR profiling", throwable);
++                MinecraftServer.LOGGER.warn("JFR 프로파일링 종료를 실패했어요.", throwable); // KPaper - Korean Lang
+             }
+         }
+ 
+@@ -483,36 +483,37 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                 File newWorld = LevelStorageSource.getStorageFolder(new File(name).toPath(), dimensionKey).toFile();
+                 File oldWorld = LevelStorageSource.getStorageFolder(new File(s).toPath(), dimensionKey).toFile();
+                 File oldLevelDat = new File(new File(s), "level.dat"); // The data folders exist on first run as they are created in the PersistentCollection constructor above, but the level.dat won't
+-
++                // KPaper Start - Korean Lang
+                 if (!newWorld.isDirectory() && oldWorld.isDirectory() && oldLevelDat.isFile()) {
+-                    MinecraftServer.LOGGER.info("---- Migration of old " + worldType + " folder required ----");
+-                    MinecraftServer.LOGGER.info("Unfortunately due to the way that Minecraft implemented multiworld support in 1.6, Bukkit requires that you move your " + worldType + " folder to a new location in order to operate correctly.");
+-                    MinecraftServer.LOGGER.info("We will move this folder for you, but it will mean that you need to move it back should you wish to stop using Bukkit in the future.");
+-                    MinecraftServer.LOGGER.info("Attempting to move " + oldWorld + " to " + newWorld + "...");
++                    MinecraftServer.LOGGER.info("---- " + worldType + " 월드 마이그레이션 필요 ----");
++                    MinecraftServer.LOGGER.info("불행히도 1.6에서 마인크래프트가 멀티월드 지원을 구현한 방식 때문에, KPaper가 올바르게 작동하려면 " + worldType +" 폴더를 새 위치로 이동해야 해요.");
++                    MinecraftServer.LOGGER.info("이 폴더를 이동시켜드릴게요, 하지만 앞으로 KPaper 사용을 중지하려면 다시 이동해야 해요.");
++                    MinecraftServer.LOGGER.info(oldWorld + "를 " + newWorld + "로 이동 시키는 중...");
+ 
+                     if (newWorld.exists()) {
+-                        MinecraftServer.LOGGER.warn("A file or folder already exists at " + newWorld + "!");
+-                        MinecraftServer.LOGGER.info("---- Migration of old " + worldType + " folder failed ----");
++                        MinecraftServer.LOGGER.warn("파일이나 풀더가 이미 " + newWorld + "에 있어요!");
++                        MinecraftServer.LOGGER.info("---- " + worldType + "풀더 마이그레이션 실패 ----");
+                     } else if (newWorld.getParentFile().mkdirs()) {
+                         if (oldWorld.renameTo(newWorld)) {
+-                            MinecraftServer.LOGGER.info("Success! To restore " + worldType + " in the future, simply move " + newWorld + " to " + oldWorld);
++                            MinecraftServer.LOGGER.info("성공! " + worldType + "를 나중에 복구하려면, " + newWorld + "를 " + oldWorld + "로 이동시키면 돼요.");
+                             // Migrate world data too.
+                             try {
+                                 com.google.common.io.Files.copy(oldLevelDat, new File(new File(name), "level.dat"));
+                                 org.apache.commons.io.FileUtils.copyDirectory(new File(new File(s), "data"), new File(new File(name), "data"));
+                             } catch (IOException exception) {
+-                                MinecraftServer.LOGGER.warn("Unable to migrate world data.");
++                                MinecraftServer.LOGGER.warn("월드 데이터 마이그레이션 실패.");
+                             }
+-                            MinecraftServer.LOGGER.info("---- Migration of old " + worldType + " folder complete ----");
++                            MinecraftServer.LOGGER.info("---- " + worldType + " 마이그레이션 성공 ----");
+                         } else {
+-                            MinecraftServer.LOGGER.warn("Could not move folder " + oldWorld + " to " + newWorld + "!");
+-                            MinecraftServer.LOGGER.info("---- Migration of old " + worldType + " folder failed ----");
++                            MinecraftServer.LOGGER.warn(oldWorld + "를 " + newWorld + "로 이동시키지 못했어요!");
++                            MinecraftServer.LOGGER.info("---- " + worldType + "마이그레이션 실패 ----");
+                         }
+                     } else {
+-                        MinecraftServer.LOGGER.warn("Could not create path for " + newWorld + "!");
+-                        MinecraftServer.LOGGER.info("---- Migration of old " + worldType + " folder failed ----");
++                        MinecraftServer.LOGGER.warn("풀더 생성에 실패했어요 (" + newWorld + ")!");
++                        MinecraftServer.LOGGER.info("---- " + worldType + "마이그레이션 실패 ----");
+                     }
+                 }
++                // KPaper end
+ 
+                 try {
+                     worldSession = LevelStorageSource.createDefault(this.server.getWorldContainer().toPath()).createAccess(name, dimensionKey);
+@@ -692,7 +693,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+                 if (spawn != null) {
+                     if (spawn.getWorld() != world.getWorld()) {
+-                        throw new IllegalStateException("Cannot set spawn point for " + worldProperties.getLevelName() + " to be in another world (" + spawn.getWorld().getName() + ")");
++                        throw new IllegalStateException(worldProperties.getLevelName() + "에 스폰 포인트를 설정할 수 없어요 - 다른 월드에 이미 있어요! (" + spawn.getWorld().getName() + ")"); // KPaper - Korean Lang
+                     } else {
+                         worldProperties.setSpawn(new BlockPos(spawn.getBlockX(), spawn.getBlockY(), spawn.getBlockZ()), spawn.getYaw());
+                         return;
+@@ -767,7 +768,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+         // CraftBukkit end
+         if (worldserver.getWorld().getKeepSpawnInMemory()) { // Paper
+ 
+-        MinecraftServer.LOGGER.info("Preparing start region for dimension {}", worldserver.dimension().location());
++        MinecraftServer.LOGGER.info("{} 디멘션의 시작 지점을 준비 중", worldserver.dimension().location()); // KPaper - Korean Lang
+         BlockPos blockposition = worldserver.getSharedSpawnPos();
+ 
+         worldloadlistener.updateSpawnPos(new ChunkPos(blockposition));
+@@ -848,12 +849,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+             ServerLevel worldserver = (ServerLevel) iterator.next();
+ 
+             if (!suppressLogs) {
+-                MinecraftServer.LOGGER.info("Saving chunks for level '{}'/{}", worldserver, worldserver.dimension().location());
++                MinecraftServer.LOGGER.info("월드 '{}'의 청크 {}를저장 중. . .", worldserver, worldserver.dimension().location()); // KPaper - Korean Lang
+             }
+             // Paper start - rewrite chunk system
+             worldserver.save((ProgressListener) null, flush, worldserver.noSave && !force, close);
+             if (flush) {
+-                MinecraftServer.LOGGER.info("ThreadedAnvilChunkStorage ({}): All chunks are saved", worldserver.getChunkSource().chunkMap.getStorageName());
++                MinecraftServer.LOGGER.info("ThreadedAnvilChunkStorage ({}): 모든 청크가 저장되었습니다.", worldserver.getChunkSource().chunkMap.getStorageName()); // KPaper - Korean Lang
+             }
+             // Paper end - rewrite chunk system
+         }
+@@ -877,7 +878,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                 //MinecraftServer.LOGGER.info("ThreadedAnvilChunkStorage ({}): All chunks are saved", worldserver2.getChunkSource().chunkMap.getStorageName()); // Paper - move up
+             }
+ 
+-            MinecraftServer.LOGGER.info("ThreadedAnvilChunkStorage: All dimensions are saved");
++            MinecraftServer.LOGGER.info("ThreadedAnvilChunkStorage: 모든 디멘션이 저장되었습니다."); // KPaper - Korean Lang
+         }
+ 
+         return flag3;
+@@ -925,7 +926,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+         shutdownThread = Thread.currentThread();
+         org.spigotmc.WatchdogThread.doStop(); // Paper
+         if (!isSameThread()) {
+-            MinecraftServer.LOGGER.info("Stopping main thread (Ignore any thread death message you see! - DO NOT REPORT THREAD DEATH TO PAPER)");
++            MinecraftServer.LOGGER.info("메인 스레드를 종료하고 있습니다. (표시된 스레드 사망 메시지는 무시하세요! - 스레드 사망을 KPaper에 보고하지 마세요)"); // KPaper - Korean Lang
+             while (this.getRunningThread().isAlive()) {
+                 this.getRunningThread().stop();
+                 try {
+@@ -939,7 +940,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+             this.cancelRecordingMetrics();
+         }
+ 
+-        MinecraftServer.LOGGER.info("Stopping server");
++        MinecraftServer.LOGGER.info("서버를 종료하는 중. . ."); // KPaper - Korean Lang
+         Commands.COMMAND_SENDING_POOL.shutdownNow(); // Paper - Shutdown and don't bother finishing
+         MinecraftTimings.stopServer(); // Paper
+         // CraftBukkit start
+@@ -954,13 +955,13 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+         this.isSaving = true;
+         if (this.playerList != null) {
+-            MinecraftServer.LOGGER.info("Saving players");
++            MinecraftServer.LOGGER.info("플레이어 저장 중 . . ."); // KPaper - Korean Lang
+             this.playerList.saveAll();
+             this.playerList.removeAll(this.isRestarting); // Paper
+             try { Thread.sleep(100); } catch (InterruptedException ex) {} // CraftBukkit - SPIGOT-625 - give server at least a chance to send packets
+         }
+ 
+-        MinecraftServer.LOGGER.info("Saving worlds");
++        MinecraftServer.LOGGER.info("월드 저장 중 . . ."); // KPaper - Korean Lang
+         Iterator iterator = this.getAllLevels().iterator();
+ 
+         ServerLevel worldserver;
+@@ -980,23 +981,23 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+         try {
+             this.storageSource.close();
+         } catch (IOException ioexception1) {
+-            MinecraftServer.LOGGER.error("Failed to unlock level {}", this.storageSource.getLevelId(), ioexception1);
++            MinecraftServer.LOGGER.error("레벨 {}을(를) UnLock하는데 실패했어요.", this.storageSource.getLevelId(), ioexception1); // KPaper - Korean Lang
+         }
+         // Spigot start
+         io.papermc.paper.util.MCUtil.asyncExecutor.shutdown(); // Paper
+         try { io.papermc.paper.util.MCUtil.asyncExecutor.awaitTermination(30, java.util.concurrent.TimeUnit.SECONDS); // Paper
+         } catch (java.lang.InterruptedException ignored) {} // Paper
+         if (org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly) {
+-            MinecraftServer.LOGGER.info("Saving usercache.json");
++            MinecraftServer.LOGGER.info("usercache.json 저장 중. . ."); // KPaper - Korean Lang
+             this.getProfileCache().save(false); // Paper
+         }
+         // Spigot end
+         // Paper start - move final shutdown items here
+-        LOGGER.info("Flushing Chunk IO");
++        LOGGER.info("Chunk IO 종료 중 . . ."); // KPaper - Korean Lang
+         io.papermc.paper.chunk.system.io.RegionFileIOThread.close(true); // Paper // Paper - rewrite chunk system
+-        LOGGER.info("Closing Thread Pool");
++        LOGGER.info("Thread Pool 종료 중 . . ."); // KPaper - Korean Lang 
+         Util.shutdownExecutors(); // Paper
+-        LOGGER.info("Closing Server");
++        LOGGER.info("서버 종료 중 . . ."); // KPaper - Korean Lang
+         try {
+             net.minecrell.terminalconsole.TerminalConsoleAppender.close(); // Paper - Use TerminalConsoleAppender
+         } catch (Exception e) {
+@@ -1032,7 +1033,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+             try {
+                 this.serverThread.join();
+             } catch (InterruptedException interruptedexception) {
+-                MinecraftServer.LOGGER.error("Error while shutting down", interruptedexception);
++                MinecraftServer.LOGGER.error("서버 종료 중 오류 발생", interruptedexception); // KPaper - Korean Lang
+             }
+         }
+ 
+@@ -1102,7 +1103,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+         try {
+             long serverStartTime = Util.getNanos(); // Paper
+             if (!this.initServer()) {
+-                throw new IllegalStateException("Failed to initialize server");
++                throw new IllegalStateException("서버 초기화 실패"); // KPaper - Korean Lang
+             }
+ 
+             this.nextTickTime = Util.getMillis();
+@@ -1111,14 +1112,14 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+             // Spigot start
+             // Paper start - move done tracking
+-            LOGGER.info("Running delayed init tasks");
++            LOGGER.info("연기된 초기화 작업 실행 중 . . ."); // KPaper - Korean Lang
+             this.server.getScheduler().mainThreadHeartbeat(this.tickCount); // run all 1 tick delay tasks during init,
+             // this is going to be the first thing the tick process does anyways, so move done and run it after
+             // everything is init before watchdog tick.
+             // anything at 3+ won't be caught here but also will trip watchdog....
+             // tasks are default scheduled at -1 + delay, and first tick will tick at 1
+             String doneTime = String.format(java.util.Locale.ROOT, "%.3fs", (double) (Util.getNanos() - serverStartTime) / 1.0E9D);
+-            LOGGER.info("Done ({})! For help, type \"help\"", doneTime);
++            LOGGER.info("서버가 시작되었어요! ({} 걸림)!", doneTime); // KPaper - Korean Lang
+             // Paper end
+ 
+             org.spigotmc.WatchdogThread.tick(); // Paper
+@@ -1139,7 +1140,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                     long j = i / 50L;
+ 
+                     if (this.server.getWarnOnOverload()) // CraftBukkit
+-                    MinecraftServer.LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", i, j);
++                    MinecraftServer.LOGGER.warn("서버를 유지할 수 없어요! 서버가 과부화 되었나요? {}ms 또는 {} 틱이 밀렸어요.", i, j); // KPaper - Korean Lang
+                     this.nextTickTime += j * 50L;
+                     this.lastOverloadWarning = this.nextTickTime;
+                 }
+@@ -1184,15 +1185,15 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+         } catch (Throwable throwable) {
+             // Paper start
+             if (throwable instanceof ThreadDeath) {
+-                MinecraftServer.LOGGER.error("Main thread terminated by WatchDog due to hard crash", throwable);
++                MinecraftServer.LOGGER.error("메인 쓰레드가 WatchDog에 의해 크래쉬 되었어요.", throwable); // KPaper - Korean Lang
+                 return;
+             }
+             // Paper end
+-            MinecraftServer.LOGGER.error("Encountered an unexpected exception", throwable);
++            MinecraftServer.LOGGER.error("알 수 없는 오류가 발생했어요.", throwable); // KPaper - Korean Lang
+             // Spigot Start
+             if ( throwable.getCause() != null )
+             {
+-                MinecraftServer.LOGGER.error( "\tCause of unexpected exception was", throwable.getCause() );
++                MinecraftServer.LOGGER.error( "\t알 수 없는 오류 : ", throwable.getCause() ); // KPaper - Korean Lang
+             }
+             // Spigot End
+             CrashReport crashreport = MinecraftServer.constructOrExtractCrashReport(throwable);
+@@ -1201,9 +1202,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+             File file = new File(new File(this.getServerDirectory(), "crash-reports"), "crash-" + Util.getFilenameFormattedDateTime() + "-server.txt");
+ 
+             if (crashreport.saveToFile(file)) {
+-                MinecraftServer.LOGGER.error("This crash report has been saved to: {}", file.getAbsolutePath());
++                MinecraftServer.LOGGER.error("크래쉬 리포트가 {}에 저장되었어요.", file.getAbsolutePath()); // KPaper - Korean Lang
+             } else {
+-                MinecraftServer.LOGGER.error("We were unable to save this crash report to disk.");
++                MinecraftServer.LOGGER.error("크래쉬 리포트를 디스크에 작성할 수 없어요."); // KPaper - Korean Lang
+             }
+ 
+             this.onServerCrash(crashreport);
+@@ -1212,7 +1213,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                 this.stopped = true;
+                 this.stopServer();
+             } catch (Throwable throwable1) {
+-                MinecraftServer.LOGGER.error("Exception stopping the server", throwable1);
++                MinecraftServer.LOGGER.error("서버를 종료하는 중 오류가 발생했어요.", throwable1); // KPaper - Korean Lang
+             } finally {
+                 if (this.services.profileCache() != null) {
+                     this.services.profileCache().clearExecutor();
+@@ -1251,7 +1252,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                 crashreport.addCategory("Wrapped in").setDetailError("Wrapping exception", throwable);
+             }
+         } else {
+-            crashreport = new CrashReport("Exception in server tick loop", throwable);
++            crashreport = new CrashReport("서버 틱 루프에서 오류 발생", throwable); // KPaper - Korean Lang
+         }
+ 
+         return crashreport;
+@@ -1362,7 +1363,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                 ImageIO.write(bufferedimage, "PNG", bytearrayoutputstream);
+                 return Optional.of(new ServerStatus.Favicon(bytearrayoutputstream.toByteArray()));
+             } catch (Exception exception) {
+-                MinecraftServer.LOGGER.error("Couldn't load server icon", exception);
++                MinecraftServer.LOGGER.error("서버 아이콘 로드 실패", exception); // KPaper - Korean Lang
+                 return Optional.empty();
+             }
+         });
+@@ -1554,10 +1555,10 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                 // Spigot Start
+                 CrashReport crashreport;
+                 try {
+-                    crashreport = CrashReport.forThrowable(throwable, "Exception ticking world");
++                    crashreport = CrashReport.forThrowable(throwable, "월드 틱 실패"); // KPaper - Korean Lang
+                 } catch (Throwable t) {
+                     if (throwable instanceof ThreadDeath) { throw (ThreadDeath)throwable; } // Paper
+-                    throw new RuntimeException("Error generating crash report", t);
++                    throw new RuntimeException("크래쉬 리포트 생성 실패", t); // KPaper - Korean Lang
+                 }
+                 // Spigot End
+ 
+@@ -1686,32 +1687,32 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+     }
+ 
+     public SystemReport fillSystemReport(SystemReport details) {
+-        details.setDetail("Server Running", () -> {
++        details.setDetail("서버 실행 중", () -> { // KPaper - Korean Lang 
+             return Boolean.toString(this.running);
+         });
+         if (this.playerList != null) {
+-            details.setDetail("Player Count", () -> {
++            details.setDetail("플레이어", () -> { // KPaper - Korean Lang
+                 int i = this.playerList.getPlayerCount();
+ 
+                 return i + " / " + this.playerList.getMaxPlayers() + "; " + this.playerList.getPlayers();
+             });
+         }
+ 
+-        details.setDetail("Data Packs", () -> {
++        details.setDetail("데이터 팩", () -> { // KPaper - Korean Lang
+             return (String) this.packRepository.getSelectedPacks().stream().map((resourcepackloader) -> {
+                 String s = resourcepackloader.getId();
+ 
+-                return s + (resourcepackloader.getCompatibility().isCompatible() ? "" : " (incompatible)");
++                return s + (resourcepackloader.getCompatibility().isCompatible() ? "" : " (비호환)"); // KPaper - Korean Lang
+             }).collect(Collectors.joining(", "));
+         });
+-        details.setDetail("Enabled Feature Flags", () -> {
++        details.setDetail("Feature 플래그 활성화", () -> { // KPaper - Korean Lang
+             return (String) FeatureFlags.REGISTRY.toNames(this.worldData.enabledFeatures()).stream().map(ResourceLocation::toString).collect(Collectors.joining(", "));
+         });
+-        details.setDetail("World Generation", () -> {
++        details.setDetail("월드 생성", () -> { // KPaper - Korean Lang
+             return this.worldData.worldGenSettingsLifecycle().toString();
+         });
+         if (this.serverId != null) {
+-            details.setDetail("Server Id", () -> {
++            details.setDetail("서버 ID", () -> { // KPaper - Korean Lang
+                 return this.serverId;
+             });
+         }
+@@ -1756,12 +1757,12 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+     }
+ 
+     protected void initializeKeyPair() {
+-        MinecraftServer.LOGGER.info("Generating keypair");
++        MinecraftServer.LOGGER.info("키 페어 생성 중. . ."); // KPaper - Korean Lang
+ 
+         try {
+             this.keyPair = Crypt.generateKeyPair();
+         } catch (CryptException cryptographyexception) {
+-            throw new IllegalStateException("Failed to generate key pair", cryptographyexception);
++            throw new IllegalStateException("키 페어 생성 실패", cryptographyexception);
+         }
+     }
+ 
+@@ -1992,7 +1993,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+     @Override
+     public void executeIfPossible(Runnable runnable) {
+         if (this.isStopped()) {
+-            throw new RejectedExecutionException("Server already shutting down");
++            throw new RejectedExecutionException("서버가 이미 종료되고 있어요."); // KPaper - Korean Lang
+         } else {
+             super.executeIfPossible(runnable);
+         }
+@@ -2121,22 +2122,22 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+                     if (!flag1 && resourcepackloader.getPackSource().shouldAddAutomatically()) {
+                         if (featureflagset1.isSubsetOf(enabledFeatures)) {
+-                            MinecraftServer.LOGGER.info("Found new data pack {}, loading it automatically", s1);
++                            MinecraftServer.LOGGER.info("새 데이터팩 {}을 찾았어요, 자동으로 로드할게요.", s1); // KPaper - Korean Lang 
+                             set.add(s1);
+                         } else {
+-                            MinecraftServer.LOGGER.info("Found new data pack {}, but can't load it due to missing features {}", s1, FeatureFlags.printMissingFlags(enabledFeatures, featureflagset1));
++                            MinecraftServer.LOGGER.info("새 데이터 팩 {}을 찾았어요, 하지만 {} 기능을 찾지 못했어요.", s1, FeatureFlags.printMissingFlags(enabledFeatures, featureflagset1));
+                         }
+                     }
+ 
+                     if (flag1 && !featureflagset1.isSubsetOf(enabledFeatures)) {
+-                        MinecraftServer.LOGGER.warn("Pack {} requires features {} that are not enabled for this world, disabling pack.", s1, FeatureFlags.printMissingFlags(enabledFeatures, featureflagset1));
++                        MinecraftServer.LOGGER.warn("데이터 팩 {}이 {}기능을 필요로 해요. 데이터 팩을 비활성화 할게요.", s1, FeatureFlags.printMissingFlags(enabledFeatures, featureflagset1));
+                         set.remove(s1);
+                     }
+                 }
+             }
+ 
+             if (set.isEmpty()) {
+-                MinecraftServer.LOGGER.info("No datapacks selected, forcing vanilla");
++                MinecraftServer.LOGGER.info("데이터 팩이 선택되지 않았어요, 바닐라로 강제할게요.");
+                 set.add("vanilla");
+             }
+ 
+@@ -2214,7 +2215,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+     public CommandStorage getCommandStorage() {
+         if (this.commandStorage == null) {
+-            throw new NullPointerException("Called before server init");
++            throw new NullPointerException("서버 초기화 전 실행"); // KPaper - Korean Lang 
+         } else {
+             return this.commandStorage;
+         }
+@@ -2296,7 +2297,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+             this.dumpServerProperties(path.resolve("server.properties.txt"));
+             this.dumpNativeModules(path.resolve("modules.txt"));
+         } catch (IOException ioexception) {
+-            MinecraftServer.LOGGER.warn("Failed to save debug report", ioexception);
++            MinecraftServer.LOGGER.warn("디버그 리포트 작성 실패", ioexception); // KPaper - Korean Lang
+         }
+ 
+     }
+@@ -2445,7 +2446,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                     try {
+                         arraylist = Lists.newArrayList(NativeModuleLister.listModules());
+                     } catch (Throwable throwable) {
+-                        MinecraftServer.LOGGER.warn("Failed to list native modules", throwable);
++                        MinecraftServer.LOGGER.warn("Native 모듈 리스트 실패", throwable); // KPaper - Korean Lang
+                         break label51;
+                     }
+ 
+diff --git a/src/main/java/net/minecraft/server/network/ServerConnectionListener.java b/src/main/java/net/minecraft/server/network/ServerConnectionListener.java
+index 44d99e89226adb6234b9405f25ac9dab9bd84297..815772bfcb92331a88543fa72c08f159f21d22c1 100644
+--- a/src/main/java/net/minecraft/server/network/ServerConnectionListener.java
++++ b/src/main/java/net/minecraft/server/network/ServerConnectionListener.java
+@@ -96,21 +96,22 @@ public class ServerConnectionListener {
+                 oclass = EpollServerSocketChannel.class;
+                 }
+                 lazyinitvar = ServerConnectionListener.SERVER_EPOLL_EVENT_GROUP;
+-                ServerConnectionListener.LOGGER.info("Using epoll channel type");
++                ServerConnectionListener.LOGGER.info("EPoll 채널 타입을 사용 할게요."); // KPaper - Korean Lang
+             } else {
+                 oclass = NioServerSocketChannel.class;
+                 lazyinitvar = ServerConnectionListener.SERVER_EVENT_GROUP;
+-                ServerConnectionListener.LOGGER.info("Using default channel type");
++                ServerConnectionListener.LOGGER.info("기본 채널 타입을 사용 할게요.");
+             }
+ 
+             // Paper start - indicate Velocity natives in use
+-            ServerConnectionListener.LOGGER.info("Paper: Using " + com.velocitypowered.natives.util.Natives.compress.getLoadedVariant() + " compression from Velocity.");
+-            ServerConnectionListener.LOGGER.info("Paper: Using " + com.velocitypowered.natives.util.Natives.cipher.getLoadedVariant() + " cipher from Velocity.");
++            
++            ServerConnectionListener.LOGGER.info("Paper: Velocity의 " + com.velocitypowered.natives.util.Natives.compress.getLoadedVariant() + "압축을 사용할게요."); // KPaper - Korean Lang 
++            ServerConnectionListener.LOGGER.info("Paper: Velocity의 " + com.velocitypowered.natives.util.Natives.cipher.getLoadedVariant() + "암호화를 사용할게요."); // KPaper - Korean Lang
+             // Paper end
+ 
+             // Paper start - indicate Proxy Protocol usage
+             if (io.papermc.paper.configuration.GlobalConfiguration.get().proxies.proxyProtocol) {
+-                ServerConnectionListener.LOGGER.info("Paper: Using Proxy Protocol");
++                ServerConnectionListener.LOGGER.info("Paper: 프록시 프로토콜 사용 중"); // KPaper - Korean Lang
+             }
+             // Paper end
+ 
+@@ -205,7 +206,7 @@ public class ServerConnectionListener {
+             try {
+                 channelfuture.channel().close().sync();
+             } catch (InterruptedException interruptedexception) {
+-                ServerConnectionListener.LOGGER.error("Interrupted whilst closing channel");
++                ServerConnectionListener.LOGGER.error("채널 종료 중 강제 종료되었어요."); // KPaper - Korean Lang
+             }
+         }
+ 
+@@ -237,7 +238,7 @@ public class ServerConnectionListener {
+                                 throw new ReportedException(CrashReport.forThrowable(exception, "Ticking memory connection"));
+                             }
+ 
+-                            ServerConnectionListener.LOGGER.warn("Failed to handle packet for {}", io.papermc.paper.configuration.GlobalConfiguration.get().logging.logPlayerIpAddresses ? String.valueOf(networkmanager.getRemoteAddress()) : "<ip address withheld>", exception); // Paper
++                            ServerConnectionListener.LOGGER.warn("패킷 핸들링 실패 : {}", io.papermc.paper.configuration.GlobalConfiguration.get().logging.logPlayerIpAddresses ? String.valueOf(networkmanager.getRemoteAddress()) : "<ip address withheld>", exception); // Paper // KPaper - Korean Lang
+                             MutableComponent ichatmutablecomponent = Component.literal("Internal server error");
+ 
+                             networkmanager.send(new ClientboundDisconnectPacket(ichatmutablecomponent), PacketSendListener.thenRun(() -> {
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 9c5754ac3b00d3f0cb80ec83a2beefadee6d0a14..e1fb4eded2ae499d932f82678338ac63d2905903 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -1038,8 +1038,8 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         PacketUtils.ensureRunningOnSameThread(packet, this, this.player.getLevel());
+         // Paper start - validate pick item position
+         if (!(packet.getSlot() >= 0 && packet.getSlot() < this.player.getInventory().items.size())) {
+-            ServerGamePacketListenerImpl.LOGGER.warn("{} tried to set an invalid carried item", this.player.getName().getString());
+-            this.disconnect("Invalid hotbar selection (Hacking?)", org.bukkit.event.player.PlayerKickEvent.Cause.ILLEGAL_ACTION); // Paper - kick event cause
++            ServerGamePacketListenerImpl.LOGGER.warn("{}님이 잘못된 핫바를 선택했어요.", this.player.getName().getString()); // KPaper - Korean Lang
++            this.disconnect("잘못된 핫바 선택 (해킹?)", org.bukkit.event.player.PlayerKickEvent.Cause.ILLEGAL_ACTION); // Paper - kick event cause
+             return;
+         }
+         this.player.getInventory().pickSlot(packet.getSlot()); // Paper - Diff above if changed
+@@ -2108,7 +2108,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         }
+         // CraftBukkit end
+         this.chatMessageChain.close();
+-        ServerGamePacketListenerImpl.LOGGER.info("{} lost connection: {}", this.player.getName().getString(), reason.getString());
++        ServerGamePacketListenerImpl.LOGGER.info("{} 연결 종료: {}", this.player.getName().getString(), reason.getString()); // KPaper - Korean Lang
+         // CraftBukkit start - Replace vanilla quit message handling with our own.
+         /*
+         this.server.invalidateStatus();
+@@ -2259,7 +2259,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         // CraftBukkit start
+         String command = "/" + packet.command();
+         if (org.spigotmc.SpigotConfig.logCommands) { // Paper
+-        ServerGamePacketListenerImpl.LOGGER.info(this.player.getScoreboardName() + " issued server command: " + command);
++        ServerGamePacketListenerImpl.LOGGER.info(this.player.getScoreboardName() + " 명령어 사용: " + command); // KPaper - Korean Lang
+         } // Paper
+ 
+         PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(this.getCraftPlayer(), command, new LazyPlayerSet(this.server));
+@@ -2500,7 +2500,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Tic
+         // Paper End
+         co.aikar.timings.MinecraftTimings.playerCommandTimer.startTiming(); // Paper
+         if ( org.spigotmc.SpigotConfig.logCommands ) // Spigot
+-        this.LOGGER.info(this.player.getScoreboardName() + " issued server command: " + s);
++        this.LOGGER.info(this.player.getScoreboardName() + " 커맨드 사용: " + s); // KPaper - Korean Lang
+ 
+         CraftPlayer player = this.getCraftPlayer();
+ 

@@ -4,6 +4,19 @@ Date: Sat, 22 Apr 2023 18:24:03 +0900
 Subject: [PATCH] Korean Lang
 
 
+diff --git a/src/main/java/io/papermc/paper/chunk/system/scheduling/ChunkTaskScheduler.java b/src/main/java/io/papermc/paper/chunk/system/scheduling/ChunkTaskScheduler.java
+index 84cc9397237fa0c17aa1012dfb5683c90eb6d3b8..965ab40027ab79bf935e924a4ce31b696d54ce59 100644
+--- a/src/main/java/io/papermc/paper/chunk/system/scheduling/ChunkTaskScheduler.java
++++ b/src/main/java/io/papermc/paper/chunk/system/scheduling/ChunkTaskScheduler.java
+@@ -103,7 +103,7 @@ public final class ChunkTaskScheduler {
+                 thread.setUncaughtExceptionHandler(io.papermc.paper.chunk.system.scheduling.NewChunkHolder.CHUNKSYSTEM_UNCAUGHT_EXCEPTION_HANDLER);
+             }, (long)(20.0e6)); // 20ms
+ 
+-        LOGGER.info("Chunk system is using " + newChunkSystemIOThreads + " I/O threads, " + newChunkSystemWorkerThreads + " worker threads, and gen parallelism of " + ChunkTaskScheduler.newChunkSystemGenParallelism + " threads");
++        LOGGER.info("청크 시스템이 " + newChunkSystemIOThreads + " I/O 쓰레드와 " + newChunkSystemWorkerThreads + " 워커 쓰레드와, Gen Parallelism " + ChunkTaskScheduler.newChunkSystemGenParallelism + "개의 쓰레드가 사용되고 있어요."); // KPaper - Korean Lang
+     }
+ 
+     public final ServerLevel world;
 diff --git a/src/main/java/net/minecraft/server/Bootstrap.java b/src/main/java/net/minecraft/server/Bootstrap.java
 index a1192d1f6b99669f843e8d9a8928ff0e8c030559..e9e4cf848db1c35b691244c9c6d757322c42369b 100644
 --- a/src/main/java/net/minecraft/server/Bootstrap.java
@@ -575,6 +588,146 @@ index aca58647d0391029420ece8e4090a5eb1fd45669..1312a180311393bd1bad824098dc9cae
                          break label51;
                      }
  
+diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
+index a7e133f3495e9132a5fdae2c24f225e7b026295a..8f93e0bd74f2ff5c59697876f46476960307dd12 100644
+--- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -174,22 +174,24 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         thread.setDaemon(true);
+         thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(DedicatedServer.LOGGER));
+         // thread.start(); // Paper - moved down
+-        DedicatedServer.LOGGER.info("Starting minecraft server version {}", SharedConstants.getCurrentVersion().getName());
++        DedicatedServer.LOGGER.info("마인크래프트 서버 버전 {}을 실행하고 있어요.", SharedConstants.getCurrentVersion().getName()); // KPaper - Korean Lang
+         if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L) {
+-            DedicatedServer.LOGGER.warn("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar minecraft_server.jar\"");
++            DedicatedServer.LOGGER.warn("더 많은 램을 할당하려면 \"java -Xmx1024M -Xms1024M -jar minecraft_server.jar\"로 실행해주세요."); // KPaper - Korean Lang
+         }
+ 
+         // Paper start - detect running as root
+         if (io.papermc.paper.util.ServerEnvironment.userIsRootOrAdmin()) {
++            // KPaper start - Korean Lang
+             DedicatedServer.LOGGER.warn("****************************");
+-            DedicatedServer.LOGGER.warn("YOU ARE RUNNING THIS SERVER AS AN ADMINISTRATIVE OR ROOT USER. THIS IS NOT ADVISED.");
+-            DedicatedServer.LOGGER.warn("YOU ARE OPENING YOURSELF UP TO POTENTIAL RISKS WHEN DOING THIS.");
+-            DedicatedServer.LOGGER.warn("FOR MORE INFORMATION, SEE https://madelinemiller.dev/blog/root-minecraft-server/");
++            DedicatedServer.LOGGER.warn("당신은 관리자 또는 루트 권한으로 서버를 실행하고 있어요.");
++            DedicatedServer.LOGGER.warn("이렇게 하면 잠재적인 위험에 노출될거에요.");
++            DedicatedServer.LOGGER.warn("자세한 정보는, https://madelinemiller.dev/blog/root-minecraft-server/ 를 참조해주세요.");
+             DedicatedServer.LOGGER.warn("****************************");
++            // KPaper end
+         }
+         // Paper end
+ 
+-        DedicatedServer.LOGGER.info("Loading properties");
++        DedicatedServer.LOGGER.info("서버 설정을 로드하고 있어요."); // KPaper - Korean Lang
+         DedicatedServerProperties dedicatedserverproperties = this.settings.getProperties();
+ 
+         if (this.isSingleplayer()) {
+@@ -228,7 +230,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         super.setPlayerIdleTimeout((Integer) dedicatedserverproperties.playerIdleTimeout.get());
+         this.setEnforceWhitelist(dedicatedserverproperties.enforceWhitelist);
+         // this.worldData.setGameType(dedicatedserverproperties.gamemode); // CraftBukkit - moved to world loading
+-        DedicatedServer.LOGGER.info("Default game type: {}", dedicatedserverproperties.gamemode);
++        DedicatedServer.LOGGER.info("기본 게임 타입: {}", dedicatedserverproperties.gamemode); // KPaper - Korean Lang
+         // Paper start - Unix domain socket support
+         java.net.SocketAddress bindAddress;
+         if (this.getLocalIp().startsWith("unix:")) {
+@@ -257,15 +259,17 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         // Paper end
+ 
+         this.initializeKeyPair();
+-        DedicatedServer.LOGGER.info("Starting Minecraft server on {}:{}", this.getLocalIp().isEmpty() ? "*" : this.getLocalIp(), this.getPort());
++        DedicatedServer.LOGGER.info("마인크래프트 서버를 {}:{}에서 실행하고 있어요.", this.getLocalIp().isEmpty() ? "*" : this.getLocalIp(), this.getPort()); // KPaper - Korean Lang
+ 
+         try {
+             this.getConnection().bind(bindAddress); // Paper - Unix domain socket support
+         } catch (IOException ioexception) {
+-            DedicatedServer.LOGGER.warn("**** FAILED TO BIND TO PORT!");
+-            DedicatedServer.LOGGER.warn("The exception was: {}", ioexception.toString());
+-            DedicatedServer.LOGGER.warn("Perhaps a server is already running on that port?");
++            // KPaper start - Korean Lang
++            DedicatedServer.LOGGER.warn("**** 포트 바인딩 실패!"); 
++            DedicatedServer.LOGGER.warn("오류: {}", ioexception.toString());
++            DedicatedServer.LOGGER.warn("서버가 이미 그 포트에서 실행되고 있나요?");
+             return false;
++            // KPaper end
+         }
+ 
+         // CraftBukkit start
+@@ -280,19 +284,21 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         String proxyLink = (io.papermc.paper.configuration.GlobalConfiguration.get().proxies.velocity.enabled) ? "https://docs.papermc.io/velocity/security" : "http://www.spigotmc.org/wiki/firewall-guide/";
+         // Paper end
+         if (!this.usesAuthentication()) {
+-            DedicatedServer.LOGGER.warn("**** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!");
+-            DedicatedServer.LOGGER.warn("The server will make no attempt to authenticate usernames. Beware.");
++            // KPaper start - Korean Lang
++            DedicatedServer.LOGGER.warn("**** 서버가 오프라인 모드에서 실행되고 있어요!");
++            DedicatedServer.LOGGER.warn("서버가 유저 닉네임을 인증하려고 하지 않을거에요.");
+             // Spigot start
+             // Paper start
+             if (usingProxy) {
+-                DedicatedServer.LOGGER.warn("Whilst this makes it possible to use " + proxyFlavor + ", unless access to your server is properly restricted, it also opens up the ability for hackers to connect with any username they choose.");
+-                DedicatedServer.LOGGER.warn("Please see " + proxyLink + " for further information.");
++                DedicatedServer.LOGGER.warn("만약 이게 " + proxyFlavor + "를 사용하기 위한거라면, 서버에 대한 액세스가 적절하게 제한되지 않는 한 해커가 선택한 사용자 이름으로 연결할 수 있는 기능도 열립니다.");
++                DedicatedServer.LOGGER.warn("자세한 정보는" + proxyLink + " 을 참조해주세요.");
+             // Paper end
+             } else {
+-                DedicatedServer.LOGGER.warn("While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.");
++                DedicatedServer.LOGGER.warn("이를 통해 인터넷 액세스 없이 게임을 즐길 수 있지만 해커가 선택한 사용자 이름으로 연결할 수 있는 기능도 제공될거에요.");
+             }
+             // Spigot end
+-            DedicatedServer.LOGGER.warn("To change this, set \"online-mode\" to \"true\" in the server.properties file.");
++            DedicatedServer.LOGGER.warn("이걸 바꾸려면,  server.properties에서 \"online-mode\"를 \"true\"로 바꿔주세요.");
++            // KPaper end - Korean Lang
+         }
+ 
+ 
+@@ -304,7 +310,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+ 
+             SkullBlockEntity.setup(this.services, this);
+             GameProfileCache.setUsesAuthentication(this.usesAuthentication());
+-            DedicatedServer.LOGGER.info("Preparing level \"{}\"", this.getLevelIdName());
++            DedicatedServer.LOGGER.info("월드 \"{}\"를 준비하는 중", this.getLevelIdName()); // KPaper - Korean Lang
+             this.loadLevel(storageSource.getLevelId()); // CraftBukkit
+             long j = Util.getNanos() - i;
+             String s = String.format(Locale.ROOT, "%.3fs", (double) j / 1.0E9D);
+@@ -315,12 +321,12 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+             }
+ 
+             if (dedicatedserverproperties.enableQuery) {
+-                DedicatedServer.LOGGER.info("Starting GS4 status listener");
++                DedicatedServer.LOGGER.info("GS4 상태 리스너 시작 중. . ."); // KPaper - Korean Lang
+                 this.queryThreadGs4 = QueryThreadGs4.create(this);
+             }
+ 
+             if (dedicatedserverproperties.enableRcon) {
+-                DedicatedServer.LOGGER.info("Starting remote control listener");
++                DedicatedServer.LOGGER.info("원격 제어 리스너 시작 중. . ."); // KPaper - Korean Lang
+                 this.rconThread = RconThread.create(this);
+                 this.remoteConsole = new org.bukkit.craftbukkit.command.CraftRemoteConsoleCommandSender(this.rconConsoleSource); // CraftBukkit
+             }
+@@ -336,7 +342,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+ 
+             if (dedicatedserverproperties.enableJmxMonitoring) {
+                 MinecraftServerStatistics.registerJmxMonitoring(this);
+-                DedicatedServer.LOGGER.info("JMX monitoring enabled");
++                DedicatedServer.LOGGER.info("JMX모니터링 활성화!"); // KPaper - Korean Lang
+             }
+ 
+             return true;
+diff --git a/src/main/java/net/minecraft/server/level/progress/LoggerChunkProgressListener.java b/src/main/java/net/minecraft/server/level/progress/LoggerChunkProgressListener.java
+index 286aad3205ef8a9e21a47ef07893844fe857556a..5e19272acbfd7a8c62b0f77ddebe52d1ba19d3a4 100644
+--- a/src/main/java/net/minecraft/server/level/progress/LoggerChunkProgressListener.java
++++ b/src/main/java/net/minecraft/server/level/progress/LoggerChunkProgressListener.java
+@@ -54,7 +54,7 @@ public class LoggerChunkProgressListener implements ChunkProgressListener {
+ 
+     @Override
+     public void stop() {
+-        LOGGER.info("Time elapsed: {} ms", (long)(Util.getMillis() - this.startTime));
++        LOGGER.info("{} ms가 걸렸어요.", (long)(Util.getMillis() - this.startTime)); // KPaper - Korean Lang
+         this.nextTickTime = Long.MAX_VALUE;
+     }
+ 
 diff --git a/src/main/java/net/minecraft/server/network/ServerConnectionListener.java b/src/main/java/net/minecraft/server/network/ServerConnectionListener.java
 index 44d99e89226adb6234b9405f25ac9dab9bd84297..815772bfcb92331a88543fa72c08f159f21d22c1 100644
 --- a/src/main/java/net/minecraft/server/network/ServerConnectionListener.java
@@ -667,3 +820,71 @@ index 9c5754ac3b00d3f0cb80ec83a2beefadee6d0a14..e1fb4eded2ae499d932f82678338ac63
  
          CraftPlayer player = this.getCraftPlayer();
  
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index 2ff578e4a953ffcf5176815ba8e3f06f73499989..3dfa1e6ba354e8dc6923a02e2c68ac510b6a2319 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -376,7 +376,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+         public void fireEvents() throws Exception {
+                         // Paper start - Velocity support
+                         if (ServerLoginPacketListenerImpl.this.velocityLoginMessageId == -1 && io.papermc.paper.configuration.GlobalConfiguration.get().proxies.velocity.enabled) {
+-                            disconnect("This server requires you to connect with Velocity.");
++                            disconnect("이 서버에 접속하려면 Velocity를 사용해야 해요."); // KPaper - Korean Lang
+                             return;
+                         }
+                         // Paper end
+@@ -421,7 +421,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+                             }
+                         }
+                         // CraftBukkit end
+-                        ServerLoginPacketListenerImpl.LOGGER.info("UUID of player {} is {}", ServerLoginPacketListenerImpl.this.gameProfile.getName(), ServerLoginPacketListenerImpl.this.gameProfile.getId());
++                        ServerLoginPacketListenerImpl.LOGGER.info("{}님의 UUID는 {}에요.", ServerLoginPacketListenerImpl.this.gameProfile.getName(), ServerLoginPacketListenerImpl.this.gameProfile.getId()); // KPaper - Korean Lang
+                         ServerLoginPacketListenerImpl.this.state = ServerLoginPacketListenerImpl.State.READY_TO_ACCEPT;
+         }
+     }
+@@ -432,12 +432,12 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+         if (io.papermc.paper.configuration.GlobalConfiguration.get().proxies.velocity.enabled && packet.getTransactionId() == this.velocityLoginMessageId) {
+             net.minecraft.network.FriendlyByteBuf buf = packet.getData();
+             if (buf == null) {
+-                this.disconnect("This server requires you to connect with Velocity.");
++                this.disconnect("서버에 접속하려면 Velocity를 사용해야 해요."); // KPaper - Korean Lang
+                 return;
+             }
+ 
+             if (!com.destroystokyo.paper.proxy.VelocityProxy.checkIntegrity(buf)) {
+-                this.disconnect("Unable to verify player details");
++                this.disconnect("플레이어 정보 확인 실패"); // KPaper - Korean Lang
+                 return;
+             }
+ 
+@@ -462,7 +462,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener,
+                 try {
+                     new LoginHandler().fireEvents();
+                 } catch (Exception ex) {
+-                    disconnect("Failed to verify username!");
++                    disconnect("유저 닉네임 검증 실패!"); // KPaper - Korean Lang
+                     server.server.getLogger().log(java.util.logging.Level.WARNING, "Exception verifying " + gameProfile.getName(), ex);
+                 }
+             });
+diff --git a/src/main/java/org/spigotmc/SpigotConfig.java b/src/main/java/org/spigotmc/SpigotConfig.java
+index 612c3169c3463d702b85975e1db79ae6e47d60d0..5a3c41e3845deccd549b2068dc828475d78f4dad 100644
+--- a/src/main/java/org/spigotmc/SpigotConfig.java
++++ b/src/main/java/org/spigotmc/SpigotConfig.java
+@@ -246,7 +246,7 @@ public class SpigotConfig
+     {
+         int count = SpigotConfig.getInt( "settings.netty-threads", 4 );
+         System.setProperty( "io.netty.eventLoopThreads", Integer.toString( count ) );
+-        Bukkit.getLogger().log( Level.INFO, "Using {0} threads for Netty based IO", count );
++        Bukkit.getLogger().log( Level.INFO, "Netty 기반 IO 쓰레드가 {0}개 생성되었어요.", count ); // KPaper - Korean Lang
+     }
+ 
+     public static boolean disableStatSaving;
+@@ -290,7 +290,7 @@ public class SpigotConfig
+     private static void playerSample()
+     {
+         SpigotConfig.playerSample = Math.max( SpigotConfig.getInt( "settings.sample-count", 12 ), 0 ); // Paper - Avoid negative counts
+-        Bukkit.getLogger().log( Level.INFO, "Server Ping Player Sample Count: {0}", playerSample ); // Paper - Use logger
++        Bukkit.getLogger().log( Level.INFO, "서버 핑 플레이어 샘플 숫자: {0}", playerSample ); // KPaper - Korean Lang // Paper - Use logger
+     }
+ 
+     public static int playerShuffle;

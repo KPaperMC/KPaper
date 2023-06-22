@@ -5,7 +5,7 @@ Subject: [PATCH] Rebrand
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 9cf389defdaeb887e9cad4f0fed3f3b95667b238..07907405da07c1fa36ee6adc4caa369587ffe8a8 100644
+index 9cf389defdaeb887e9cad4f0fed3f3b95667b238..d4afde9c0d06165ba3251732ba7db1834696ee34 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -7,8 +7,12 @@ plugins {
@@ -16,7 +16,7 @@ index 9cf389defdaeb887e9cad4f0fed3f3b95667b238..07907405da07c1fa36ee6adc4caa3695
 -    implementation(project(":paper-mojangapi"))
 +    // KPaper start - Rebrand
 +    implementation(project(":kpaper-api"))
-+    implementation("io.papermc.paper:paper-mojangapi:1.19.4:R0.1-SNAPSHOT") {
++    implementation("io.papermc.paper:paper-mojangapi:1.19.4-R0.1-SNAPSHOT") {
 +        exclude("io.papermc.paper", "paper-api")
 +    }
 +    // KPaper end

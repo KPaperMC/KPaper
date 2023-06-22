@@ -6,7 +6,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2" apply false
 
     // In general, keep this version in sync with upstream. Sometimes a newer version than upstream might work, but an older version is extremely likely to break.
-    id("io.papermc.paperweight.patcher") version "1.4.0"
+    id("io.papermc.paperweight.patcher") version "1.5.5"
 }
 
 val paperMavenPublicUrl = "https://repo.papermc.io/repository/maven-public/"
@@ -19,9 +19,9 @@ repositories {
 }
 
 dependencies {
-    remapper("net.fabricmc:tiny-remapper:0.8.6:fat") // Must be kept in sync with upstream
-    decompiler("net.minecraftforge:forgeflower:2.0.605.1") // Must be kept in sync with upstream
-    paperclip("io.papermc:paperclip:3.0.2") // You probably want this to be kept in sync with upstream
+    remapper("net.fabricmc:tiny-remapper:0.8.6:fat")
+    decompiler("net.minecraftforge:forgeflower:2.0.627.2")
+    paperclip("io.papermc:paperclip:3.0.3")
 }
 
 allprojects {
